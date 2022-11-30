@@ -5,7 +5,6 @@ mydb = mysql.connector.connect(
     host=dbCreds.hostname,
     user=dbCreds.username,
     passwd=dbCreds.password,
-    database=dbCreds.database,
 )
 
 my_cursor = mydb.cursor()
