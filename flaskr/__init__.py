@@ -1,6 +1,8 @@
 from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
 from instance import dbCreds
+from auth import bp
+
 
 # our application factory function
 def create_app(test_config=None):
@@ -15,7 +17,7 @@ def create_app(test_config=None):
     # database file path etc.
     app.config.from_mapping(
         SECRET_KEY='dev',
-        SQLALCHEMY_DATABASE_URI=f'mysql+pymysql://{dbCreds.username}:{dbCreds.password}@{dbCreds.hostname}/{dbCreds.database} '
+        SQLALCHEMY_DATABASE_URI=f"mysql+pymysql://{dbCreds.username}:{dbCreds.password}@{dbCreds.hostname}/{dbCreds.database}"
     )
 
     db = SQLAlchemy(app)
@@ -27,6 +29,8 @@ def create_app(test_config=None):
     else:
         app.config.from_mapping(test_config)
 
+    # create blueprint in the python file and register that blueprint with app
+    app.register_blueprint(auth.bp)
     @app.route('/')
     def index():
         return "Default Route: Index Page"
