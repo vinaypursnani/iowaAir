@@ -1,7 +1,6 @@
 from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
 from instance import dbCreds
-from auth import bp
 
 
 # our application factory function
@@ -15,25 +14,18 @@ def create_app(test_config=None):
     # setting default configuration for the app to use
     # like secret key to keep the data safe
     # database file path etc.
-    app.config.from_mapping(
-        SECRET_KEY='dev',
-        SQLALCHEMY_DATABASE_URI=f"mysql+pymysql://{dbCreds.username}:{dbCreds.password}@{dbCreds.hostname}/{dbCreds.database}"
-    )
+    app.config["SECRET_KEY"] = 'dev'
+    app.config[
+        "SQLALCHEMY_DATABASE_URI"] = f"mysql+pymysql://{dbCreds.username}:{dbCreds.password}@{dbCreds.hostname}/{dbCreds.database}"
 
-    db = SQLAlchemy(app)
+    db = SQLAlchemy()
+    db.init_app(app)
 
-    if test_config is None:
-        # used to override default app configurations with the one's present in the instance folder of this app
-        app.config.from_pyfile('config.py', silent=True)
-        # to use the configuration file from testing environment
-    else:
-        app.config.from_mapping(test_config)
+    from .auth import auth
+    app.register_blueprint(auth)
 
-    # create blueprint in the python file and register that blueprint with app
-    app.register_blueprint(auth.bp)
-    @app.route('/')
-    def index():
-        return "Default Route: Index Page"
+    from .main import mainBP
+    app.register_blueprint(mainBP)
 
     return app
 
