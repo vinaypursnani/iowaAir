@@ -6,7 +6,7 @@ from instance import dbCreds
 # our application factory function
 def create_app(test_config=None):
     # creating flask instance
-    app = Flask(__name__, instance_relative_config=True)
+    app = Flask(__name__, template_folder='../templates')
     # __name__ is the name of current python module, we use it to tell the app where current python module path. ???
     # the second parameter tells the app that all the config files are relative to instance folder and files located
     # outside flaskr folder won't be committed
